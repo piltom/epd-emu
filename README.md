@@ -8,7 +8,7 @@ my development without carrying a screen taped to styrofoam on the train 😅
 
 # The display and data load alignment
 
-While testing out modifications of the sample code, I ran into problems when the X px coordinates
+While testing out modifications of the [Waveshare sample code](https://github.com/waveshare/IT8951-ePaper/tree/master/Raspberry/), I ran into problems when the X px coordinates
 of an image load do not align with 4 bytes.
 
 The controller seems to be rounding the coordinatesu up to the nearest 4 byte alignment.
