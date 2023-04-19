@@ -1,15 +1,22 @@
 # IT8951 1bpp A2_MODE emulator
 
 Small utility for developing graphic interfaces for the IT8951 EPD driver, in particular
-with the 10.3" Waveshare display. This is a quick and dirty tool made to be able to visualize
-my development without carrying a screen taped to styrofoam on the train :)
+with the 10.3" Waveshare display.
+
+This is a quick and dirty tool made to be able to visualize
+my development without carrying a screen taped to styrofoam on the train 😅
 
 # The display and data load alignment
 
-While testing out modifications of the sample code I run into problems when the X px coordinates
-of an image load do not align with 4 bytes. The controller seems to be rounding the coordinates
-up to the nearest 4 byte alignment. Depending on how many bits per pixel you are using, this results
-in different pixel alignments. The image width must also be 4 byte padded, otherwise it will also get
+While testing out modifications of the sample code, I ran into problems when the X px coordinates
+of an image load do not align with 4 bytes.
+
+The controller seems to be rounding the coordinatesu up to the nearest 4 byte alignment.
+
+Depending on how many bits per pixel you are using, this results
+in different pixel alignments.
+
+The image width must also be 4 byte padded, otherwise it will also get
 rounded up and the resulting image will be deformed (photos to come).
 
 For now the emulator only supports 1bpp (bits-per-pixel) because it is anyway the only bpp setting
