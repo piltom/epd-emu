@@ -38,7 +38,7 @@ each row an extra byte from the next row is taken. This causes the image to
 get displaced and deformed.
 
 The display is initialized with all bits to 0xF0 (0b11110000), which means that unwritten sectors of the memory will be displayed as vertical stripes. Because the
-load part gets aligned to 4 bytes but not the display part, we see part of it.
+load part gets aligned to 4 bytes but not the display part, we see part of the not painted section (3 bytes wide to be precise, 3 sets of black and white stripes).
 
 Writing the test image to x=104px (13 bytes)
 
@@ -63,8 +63,13 @@ Test image drawn at x=120px (15 bytes).
 ![case4](img/4.jpg)
 
 
-For now
+# Screenshots from the program
 
+Here are two screenshots from the window created by the utility. They match the first two alignment cases respectively.
+
+![scr1](img/screenshot1.png)
+
+![scr2](img/screenshot2.png)
 
 # Requirements
 

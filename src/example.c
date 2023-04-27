@@ -8,8 +8,8 @@
 #include <math.h>
 
 // Screen dimension constants
-const int SCREEN_WIDTH = 1872;
-const int SCREEN_HEIGHT = 1404;
+const int SCREEN_WIDTH = 1000;
+const int SCREEN_HEIGHT = 1000;
 
 void paint_pixel_1bpp(uint32_t x, uint32_t y, uint32_t wbyte, uint8_t* buf) {
   uint32_t addr = x / 8 + y * wbyte;
@@ -65,11 +65,11 @@ int main(int argc, char *args[])
 
   tom_img mybuf = alloc_and_paint_test_img_1bpp(704, 16);
 
-  EpdEmu_Write1bpp(120, 40, 704, 704, mybuf.buf, mybuf.buf_size);
-  EpdEmu_DisplayArea1bpp(120,40, 704, 704);
+  EpdEmu_Write1bpp(104, 40, 704, 704, mybuf.buf, mybuf.buf_size);
+  EpdEmu_DisplayArea1bpp(104,40, 704, 704);
   //EpdEmu_DisplayArea1bpp(0,0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-  sleep(3);
+  sleep(30);
   EpdEmu_Destroy();
   free(mybuf.buf);
   return 0;
