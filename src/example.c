@@ -4,10 +4,54 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
 
 // Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 1872;
+const int SCREEN_HEIGHT = 1404;
+
+void paint_pixel_1bpp(uint32_t x, uint32_t y, uint32_t wbyte, uint8_t* buf) {
+  uint32_t addr = x / 8 + y * wbyte;
+  uint32_t shift = x % 8;
+  buf[addr] &= ~(0b1 << shift);
+}
+
+typedef struct {
+  size_t buf_size;
+  uint8_t* buf;
+} tom_img;
+
+void paint_rect_1bpp(int32_t xs,int32_t ys,int32_t xe,int32_t ye, uint32_t wbyte, uint8_t* buf){
+  for (int32_t x=xs; x<xe; x++) {
+      for (int32_t y=ys; y<ye; y++) {
+          paint_pixel_1bpp(x, y, wbyte, buf);
+      }
+    }
+}
+
+tom_img alloc_and_paint_test_img_1bpp(int32_t size, int32_t rect_size) {
+  tom_img ret;
+  uint32_t w = size;
+  uint32_t h = size;
+  uint32_t wbyte = (w % 8 == 0)? w / 8 : w / 8 + 1;
+
+  ret.buf_size = h * wbyte;
+  ret.buf = malloc(ret.buf_size);
+  memset(ret.buf, 0xFF, ret.buf_size);
+  if (ret.buf) {
+    // top left corner rect, 8 px from left
+    paint_rect_1bpp(8, 0, 8+rect_size, rect_size, wbyte, ret.buf);
+    // top right corner rect, 8 px from right
+    paint_rect_1bpp(size-rect_size-8, 0, size-8, rect_size, wbyte, ret.buf);
+    // centered rect
+    paint_rect_1bpp(size/2-rect_size/2, size/2-rect_size/2, size/2+rect_size/2, size/2+rect_size/2, wbyte, ret.buf);
+    // botom left and bottom right rects
+    paint_rect_1bpp(8, size-rect_size, 8+rect_size, size, wbyte, ret.buf);
+    paint_rect_1bpp(size-rect_size-8, size-rect_size, size-8, size, wbyte, ret.buf);
+  }
+  return ret;
+}
 
 int main(int argc, char *args[])
 {
@@ -19,19 +63,14 @@ int main(int argc, char *args[])
     return 1;
   }
 
-  uint8_t *mybuf = malloc(800);
-  memset(mybuf, 0x00, 80);
+  tom_img mybuf = alloc_and_paint_test_img_1bpp(704, 16);
 
-  // the load parameters will affect how the buffer is interpreted
-  // in this case, 800 bytes at 1 bit per pixel means 3200 pixels
-  // With a width of 32px, that makes it 100px in height
-  EpdEmu_Write1bpp(32, 10, 32, mybuf, 800);
-  sleep(3);
-  // after loading in the buffer, we display part of it
-  EpdEmu_DisplayArea1bpp(32, 10, 32, 100);
+  EpdEmu_Write1bpp(120, 40, 704, 704, mybuf.buf, mybuf.buf_size);
+  EpdEmu_DisplayArea1bpp(120,40, 704, 704);
+  //EpdEmu_DisplayArea1bpp(0,0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
   sleep(3);
   EpdEmu_Destroy();
-  free(mybuf);
+  free(mybuf.buf);
   return 0;
 }

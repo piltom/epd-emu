@@ -79,19 +79,31 @@ void EpdEmu_DisplayArea1bpp(uint32_t x, uint32_t y, uint32_t w, uint32_t h)
 
 #endif
 
-uint32_t EpdEmu_Write1bpp(uint32_t x, uint32_t y, uint32_t w, const uint8_t *buf, uint32_t len)
+uint32_t EpdEmu_Write1bpp(uint32_t x, uint32_t y, uint32_t w, uint32_t h, const uint8_t *buf, uint32_t len)
 {
   if (g_emu.img.buf == NULL)
   {
     return 0;
   }
-  uint32_t pos = ROUND_UP_TO_4_MUL(CEIL_INT_DIV(x * g_emu.bpp, 8)) + y * g_emu.width_bytes;
-  uint32_t w_bytes = ROUND_UP_TO_4_MUL(CEIL_INT_DIV(w * g_emu.bpp, 8));
-  for (int i = 0; i < len; i++)
-  {
-    uint32_t col = pos + i / w_bytes * g_emu.width_bytes;
-    uint32_t row = i % w_bytes;
-    g_emu.img.buf[col + row] = buf[i];
+
+  uint32_t xpos_unaligned_bytes = CEIL_INT_DIV(x, 8);
+  uint32_t xpos_algined_bytes = ROUND_UP_TO_4_MUL(xpos_unaligned_bytes);
+
+  uint32_t w_bytes = CEIL_INT_DIV(w, 8) + xpos_unaligned_bytes%2;
+
+  uint32_t bytes_written_to_row = 0;
+  uint32_t row = y;
+  for(int i=0; i<len;i+=2) {
+    uint32_t x_bytes = xpos_algined_bytes+bytes_written_to_row;
+    uint32_t pos = x_bytes  + row * g_emu.width_bytes;
+
+    g_emu.img.buf[pos] = buf[i];
+    g_emu.img.buf[pos+1] = buf[i+1];
+    bytes_written_to_row+=2;
+    if (bytes_written_to_row>=w_bytes) {
+      row++;
+      bytes_written_to_row=0;
+    }
   }
   return 0;
 }

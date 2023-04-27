@@ -16,7 +16,7 @@ int EpdEmu_StartWindow();
 void EpdEmu_DisplayArea1bpp(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
 #endif
 
-uint32_t EpdEmu_Write1bpp(uint32_t x, uint32_t y, uint32_t w, const uint8_t *buf, uint32_t len);
+uint32_t EpdEmu_Write1bpp(uint32_t x, uint32_t y, uint32_t w, uint32_t h, const uint8_t *buf, uint32_t len);
 EpdEmu_image_t EpdEmu_GetImg();
 void EpdEmu_Destroy();
 
